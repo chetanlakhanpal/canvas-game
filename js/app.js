@@ -97,6 +97,7 @@ var Character = function(player){
 var Player = function (){
 
     this._score = 0;
+    this.gameWon = true;
     this.scoreEl = document.getElementById('score');
     this.setScore = function(score){
         this._score = score;
@@ -121,6 +122,7 @@ Player.prototype.reset = function(){
     //To put on the 6th row (6 - 1), i.e. 5th index,
     // -25 is for half of the height of the image.
     this.y = 83 * 5 - 25;
+    this.gameWon = false;
 }
 
 Player.prototype.reduceScore = function(){
@@ -151,6 +153,18 @@ Player.prototype.handleInput = function(keyPressed){
                 this.y -= 83;
             if (this.y < 0){
                 this.setScore(this.getScore() + 10);
+                setTimeout(() => {
+                    const gameWon = this.gameWon ? ' again' : '';
+                    if (!confirm(`You made it${gameWon}, Would you like to keep playing to score more ?`)) {
+                      this.reset();
+                      this.setScore(0);
+                      allEnemies.forEach(enemy => {
+                        enemy.reset();
+                      });
+                    } else {
+                      this.gameWon = true;
+                    }
+                }, 10);
             }
       break;
       case "right":
